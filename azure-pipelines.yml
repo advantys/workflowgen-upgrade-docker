@@ -17,6 +17,7 @@ jobs:
   steps:
   - template: scripts/steps/build-images.yml
     parameters:
+      appVersion: ${{ variables.APP_VERSION }}
       osVersion: ltsc2019
 - job: BuildUbuntu1804
   displayName: Build Linux version (Ubuntu 18.04)
@@ -28,6 +29,7 @@ jobs:
     persistCredentials: true
   - template: scripts/steps/build-images.yml
     parameters:
+      appVersion: ${{ variables.APP_VERSION }}
       osVersion: ubuntu-18.04
   - pwsh: |
       git tag $env:APP_VERSION

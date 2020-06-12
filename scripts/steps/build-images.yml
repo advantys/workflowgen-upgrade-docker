@@ -1,4 +1,6 @@
 parameters:
+  - name: appVersion
+    type: string
   - name: osVersion
     type: string
     default: ubuntu-18.04
@@ -19,13 +21,13 @@ steps:
       ${{ if contains(parameters.osVersion, 'ubuntu') }}:
         Dockerfile: $(Build.Repository.LocalPath)/linux/ubuntu/Dockerfile.linux
         tags: |
-          ${{ variables.APP_VERSION }}-${{ parameters.osVersion }}
+          ${{ parameters.appVersion }}-${{ parameters.osVersion }}
           latest-${{ parameters.osVersion }}
           latest
       ${{ if eq(parameters.osVersion, 'ltsc2019') }}:
         Dockerfile: $(Build.Repository.LocalPath)/windows/windowsservercore-${{ parameters.osVersion }}/Dockerfile.windows
         tags: |
-          ${{ variables.APP_VERSION }}-win-${{ parameters.osVersion }}
+          ${{ parameters.appVersion }}-win-${{ parameters.osVersion }}
           latest-win-${{ parameters.osVersion }}
   - task: Docker@2
     displayName: docker logout
