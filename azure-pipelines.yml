@@ -21,6 +21,8 @@ jobs:
       osVersion: ltsc2019
 - job: BuildUbuntu1804
   displayName: Build Linux version (Ubuntu 18.04)
+  dependsOn:
+    - Buildltsc2019
   pool:
     vmImage: ubuntu-18.04
   steps:
