@@ -5,27 +5,30 @@ parameters:
 
 steps:
   - task: Docker@2
+    displayName: docker login
     inputs:
       command: login
       containerRegistry: Docker Hub Advantys
   - task: Docker@2
+    displayName: Build and push image
     inputs:
       command: buildAndPush
       repository: advantys/workflowgen-upgrade
       containerRegistry: Docker Hub Advantys
       buildContext: $(Build.Repository.LocalPath)
-      ${{ if eq(variables['agent.os'], 'Linux') }}:
+      ${{ if eq(variables['Agent.OS'], 'Linux') }}:
         dockerfile: $(Build.Repository.LocalPath)/linux/ubuntu/Dockerfile.linux
         tags: |
           ${{ variables.APP_VERSION }}-${{ parameters.osVersion }}
           latest-${{ parameters.osVersion }}
           latest
-      ${{ if eq(variables['agent.os'], 'Windows_NT') }}:
+      ${{ if eq(variables['Agent.OS'], 'Windows_NT') }}:
         dockerfile: $(Build.Repository.LocalPath)/windows/windowsservercore-${{ parameters.osVersion }}/Dockerfile.windows
         tags: |
           ${{ variables.APP_VERSION }}-win-${{ parameters.osVersion }}
           latest-win-${{ parameters.osVersion }}
   - task: Docker@2
+    displayName: docker logout
     inputs:
       command: logout
       containerRegistry: Docker Hub Advantys
