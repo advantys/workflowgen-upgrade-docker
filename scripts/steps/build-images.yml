@@ -17,13 +17,13 @@ steps:
       containerRegistry: Docker Hub Advantys
       buildContext: $(Build.Repository.LocalPath)
       ${{ if eq(variables['Agent.OS'], 'Linux') }}:
-        dockerfile: $(Build.Repository.LocalPath)/linux/ubuntu/Dockerfile.linux
+        Dockerfile: $(Build.Repository.LocalPath)/linux/ubuntu/Dockerfile.linux
         tags: |
           ${{ variables.APP_VERSION }}-${{ parameters.osVersion }}
           latest-${{ parameters.osVersion }}
           latest
       ${{ if eq(variables['Agent.OS'], 'Windows_NT') }}:
-        dockerfile: $(Build.Repository.LocalPath)/windows/windowsservercore-${{ parameters.osVersion }}/Dockerfile.windows
+        Dockerfile: $(Build.Repository.LocalPath)/windows/windowsservercore-${{ parameters.osVersion }}/Dockerfile.windows
         tags: |
           ${{ variables.APP_VERSION }}-win-${{ parameters.osVersion }}
           latest-win-${{ parameters.osVersion }}
