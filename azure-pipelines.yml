@@ -10,14 +10,6 @@ trigger:
     - master
 
 jobs:
-- job: BuildUbuntu1804
-  displayName: Build Linux version (Ubuntu 18.04)
-  pool:
-    vmImage: ubuntu-18.04
-  steps:
-  - template: scripts/steps/build-images.yml
-    parameters:
-      osVersion: ubuntu-18.04
 - job: Buildltsc2019
   displayName: Build Windows version (ltsc2019)
   pool:
@@ -26,3 +18,19 @@ jobs:
   - template: scripts/steps/build-images.yml
     parameters:
       osVersion: ltsc2019
+- job: BuildUbuntu1804
+  displayName: Build Linux version (Ubuntu 18.04)
+  pool:
+    vmImage: ubuntu-18.04
+  steps:
+  - checkout: self
+    clean: true
+    persistCredentials: true
+  - template: scripts/steps/build-images.yml
+    parameters:
+      osVersion: ubuntu-18.04
+  - pwsh: |
+      git tag $env:APP_VERSION
+      git push origin $env:APP_VERSION
+    workingDirectory: $(Build.Repository.LocalPath)
+    displayName: Tag Github repository
