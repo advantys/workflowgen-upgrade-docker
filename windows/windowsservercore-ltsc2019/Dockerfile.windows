@@ -1,0 +1,16 @@
+#escape=`
+FROM mcr.microsoft.com/powershell:7.0.2-windowsservercore-1809
+
+SHELL [ "pwsh", "-Command", "$ErrorActionPreference = 'Stop';", "$ProgressPreference = 'SilentlyContinue';" ]
+
+# Install SqlServer module
+USER ContainerAdministrator
+RUN Install-Module SqlServer -Scope AllUsers -Force -AcceptLicense -RequiredVersion 21.1.18221 && `
+    Enable-ExperimentalFeature PSNullConditionalOperators -WarningAction SilentlyContinue
+
+USER ContainerUser
+COPY .\build\migrations C:\wfgen\migrations
+COPY .\build\docker\workflowgen-upgrade\docker-entrypoint.ps1 `
+    .\build\docker\Utils.psm1 `
+    C:\
+ENTRYPOINT C:\docker-entrypoint.ps1

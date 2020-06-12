@@ -1,0 +1,28 @@
+variables:
+- name: APP_VERSION
+  value: '0.0.1'
+
+pr: none
+
+trigger:
+  branches:
+    include:
+    - master
+
+jobs:
+- job: BuildUbuntu1804
+  displayName: Build Linux version (Ubuntu 18.04)
+  pool:
+    vmImage: ubuntu-18.04
+  steps:
+  - template: scripts/steps/build-images.yml
+    parameters:
+      osVersion: ubuntu-18.04
+- job: Buildltsc2019
+  displayName: Build Windows version (ltsc2019)
+  pool:
+    vmImage: windows-2019
+  steps:
+  - template: scripts/steps/build-images.yml
+    parameters:
+      osVersion: ltsc2019

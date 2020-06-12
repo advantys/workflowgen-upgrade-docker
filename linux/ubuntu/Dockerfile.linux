@@ -1,0 +1,21 @@
+FROM mcr.microsoft.com/powershell:7.0.2-ubuntu-18.04
+
+# Install unzip and rsync tools
+RUN apt-get update && apt-get install -y unzip rsync
+
+# Install SqlServer module
+RUN pwsh -NoLogo -NoProfile -Command " \
+        \$ErrorActionPreference = 'Stop'; \
+        \$ProgressPreference = 'SilentlyContinue'; \
+        Enable-ExperimentalFeature PSNullConditionalOperators -WarningAction SilentlyContinue; \
+        Install-Module SqlServer \
+            -Scope AllUsers \
+            -Force \
+            -AcceptLicense \
+            -RequiredVersion '21.1.18221' \
+    "
+
+COPY ./migrations /usr/local/wfgen/migrations
+COPY ./Utils.psm1 /usr/local/lib/
+COPY ./docker-entrypoint.ps1 /usr/local/bin/
+ENTRYPOINT [ "pwsh", "/usr/local/bin/docker-entrypoint.ps1" ]
