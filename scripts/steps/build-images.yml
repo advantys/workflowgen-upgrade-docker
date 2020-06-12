@@ -14,13 +14,13 @@ steps:
       repository: advantys/workflowgen-upgrade
       containerRegistry: Docker Hub Advantys
       buildContext: $(Build.Repository.LocalPath)
-      ${{ if eq(variables["agent.os"], "Linux") }}:
+      ${{ if eq(variables['agent.os'], 'Linux') }}:
         dockerfile: $(Build.Repository.LocalPath)/linux/ubuntu/Dockerfile.linux
         tags: |
           ${{ variables.APP_VERSION }}-${{ parameters.osVersion }}
           latest-${{ parameters.osVersion }}
           latest
-      ${{ if eq(variables["agent.os"], "Windows_NT") }}:
+      ${{ if eq(variables['agent.os'], 'Windows_NT') }}:
         dockerfile: $(Build.Repository.LocalPath)/windows/windowsservercore-${{ parameters.osVersion }}/Dockerfile.windows
         tags: |
           ${{ variables.APP_VERSION }}-win-${{ parameters.osVersion }}
