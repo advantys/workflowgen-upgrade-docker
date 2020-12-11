@@ -9,8 +9,8 @@ USER ContainerAdministrator
 RUN Install-Module SqlServer -Scope AllUsers -Force -AcceptLicense -RequiredVersion 21.1.18230
 
 USER ContainerUser
-COPY .\build\migrations C:\wfgen\migrations
-COPY .\build\docker\workflowgen-upgrade\docker-entrypoint.ps1 `
-    .\build\docker\Utils.psm1 `
+COPY .\migrations C:\wfgen\migrations
+COPY .\docker-entrypoint.ps1 `
+    .\Utils.psm1 `
     C:\
 ENTRYPOINT C:\docker-entrypoint.ps1
