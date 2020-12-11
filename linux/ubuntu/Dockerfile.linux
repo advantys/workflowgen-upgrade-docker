@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/powershell:7.0.2-ubuntu-18.04
+FROM mcr.microsoft.com/powershell:7.1.0-ubuntu-18.04
 
 # Install unzip and rsync tools
 RUN apt-get update && apt-get install -y unzip rsync
@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y unzip rsync
 RUN pwsh -NoLogo -NoProfile -Command " \
         \$ErrorActionPreference = 'Stop'; \
         \$ProgressPreference = 'SilentlyContinue'; \
-        Enable-ExperimentalFeature PSNullConditionalOperators -WarningAction SilentlyContinue; \
         Install-Module SqlServer \
             -Scope AllUsers \
             -Force \

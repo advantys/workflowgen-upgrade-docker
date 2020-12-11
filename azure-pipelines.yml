@@ -1,6 +1,6 @@
 variables:
 - name: APP_VERSION
-  value: '0.0.1'
+  value: '0.1.0'
 
 pr: none
 

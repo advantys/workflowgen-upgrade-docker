@@ -124,7 +124,7 @@ function Split-SqlStatements {
 
     return $statements `
         | Where-Object { -not ([string]::IsNullOrWhiteSpace($_)) } `
-        | ForEach-Object { $_.Trim(" ", [Environment]::NewLine) }
+        | ForEach-Object { $_.Trim(" ", "`n", "`r", "`t") }
 }
 
 $dataPath = Get-WFGEnvVar "WFGEN_DATA_PATH" -DefaultValue $(
@@ -227,7 +227,9 @@ $mergeFolders = { param([string]$Source, [string]$Destination, [string[]]$Exclud
         )
         robocopy $Source $Destination $arguments ($VerbosePreference -eq "Continue" ? "" : '1>$null')
         Write-Debug "Last exit code: $LASTEXITCODE"
-        Test-WFGError -ErrorMessage "There has been an error while merge App_Data files."
+        Test-WFGError `
+            -ErrorMessage "There has been an error while merge App_Data files." `
+            -AdditionalSuccessCodes @(1, 2, 3, 4, 5, 6, 7)
     }
 }
 
