@@ -6,7 +6,7 @@ SHELL [ "pwsh", "-Command", "$ErrorActionPreference = 'Stop';", "$ProgressPrefer
 
 # Install SqlServer module
 USER ContainerAdministrator
-RUN Install-Module SqlServer -Scope AllUsers -Force -AcceptLicense -RequiredVersion 21.1.18230
+RUN Install-Module SqlServer -Scope AllUsers -Force -AcceptLicense -RequiredVersion 21.1.18235
 
 USER ContainerUser
 COPY .\migrations C:\wfgen\migrations
