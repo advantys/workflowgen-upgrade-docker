@@ -19,12 +19,18 @@ jobs:
     parameters:
       appVersion: ${{ variables.APP_VERSION }}
       osVersion: ltsc2019
-- job: BuildUbuntu1804
-  displayName: Build Linux version (Ubuntu 18.04)
+- job: BuildUbuntu
+  displayName: Build Linux version Ubuntu
+  strategy:
+    matrix:
+      "18.04":
+        UBUNTU_VERSION: "18.04"
+      "20.04":
+        UBUNTU_VERSION: "20.04"
   dependsOn:
     - Buildltsc2019
   pool:
-    vmImage: ubuntu-18.04
+    vmImage: ubuntu-20.04
   steps:
   - checkout: self
     clean: true
@@ -32,7 +38,7 @@ jobs:
   - template: scripts/steps/build-images.yml
     parameters:
       appVersion: ${{ variables.APP_VERSION }}
-      osVersion: ubuntu-18.04
+      osVersion: ubuntu-$(UBUNTU_VERSION)
   - pwsh: |
       git tag $env:APP_VERSION
       git push origin $env:APP_VERSION

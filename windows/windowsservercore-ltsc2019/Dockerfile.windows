@@ -1,6 +1,6 @@
 #escape=`
 ARG WINDOWS_SERVER_VERSION=1809
-FROM mcr.microsoft.com/powershell:7.1.0-windowsservercore-${WINDOWS_SERVER_VERSION}
+FROM mcr.microsoft.com/powershell:7.1.2-windowsservercore-${WINDOWS_SERVER_VERSION}
 
 SHELL [ "pwsh", "-Command", "$ErrorActionPreference = 'Stop';", "$ProgressPreference = 'SilentlyContinue';" ]
 

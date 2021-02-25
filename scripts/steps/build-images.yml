@@ -12,20 +12,46 @@ steps:
       command: login
       containerRegistry: Docker Hub Advantys
   - task: Docker@2
-    displayName: Build and push image
+    displayName: Build image
     inputs:
-      command: buildAndPush
+      command: build
       repository: advantys/workflowgen-upgrade
       containerRegistry: Docker Hub Advantys
       buildContext: $(Build.Repository.LocalPath)
       ${{ if contains(parameters.osVersion, 'ubuntu') }}:
+        arguments: --build-arg BASE_VERSION=${{ parameters.osVersion }}
         Dockerfile: $(Build.Repository.LocalPath)/linux/ubuntu/Dockerfile.linux
-        tags: |
-          ${{ parameters.appVersion }}-${{ parameters.osVersion }}
-          latest-${{ parameters.osVersion }}
-          latest
+        ${{ if eq(parameters.osVersion, 'ubuntu-20.04') }}:
+          tags: |
+            ${{ parameters.appVersion }}-${{ parameters.osVersion }}
+            latest-${{ parameters.osVersion }}
+            latest
+        ${{ if ne(parameters.osVersion, 'ubuntu-20.04') }}:
+          tags: |
+            ${{ parameters.appVersion }}-${{ parameters.osVersion }}
+            latest-${{ parameters.osVersion }}
       ${{ if eq(parameters.osVersion, 'ltsc2019') }}:
         Dockerfile: $(Build.Repository.LocalPath)/windows/windowsservercore-${{ parameters.osVersion }}/Dockerfile.windows
+        tags: |
+          ${{ parameters.appVersion }}-win-${{ parameters.osVersion }}
+          latest-win-${{ parameters.osVersion }}
+  - task: Docker@2
+    displayName: Push image
+    inputs:
+      command: push
+      repository: advantys/workflowgen-upgrade
+      containerRegistry: Docker Hub Advantys
+      ${{ if contains(parameters.osVersion, 'ubuntu') }}:
+        ${{ if eq(parameters.osVersion, 'ubuntu-20.04') }}:
+          tags: |
+            ${{ parameters.appVersion }}-${{ parameters.osVersion }}
+            latest-${{ parameters.osVersion }}
+            latest
+        ${{ if ne(parameters.osVersion, 'ubuntu-20.04') }}:
+          tags: |
+            ${{ parameters.appVersion }}-${{ parameters.osVersion }}
+            latest-${{ parameters.osVersion }}
+      ${{ if eq(parameters.osVersion, 'ltsc2019') }}:
         tags: |
           ${{ parameters.appVersion }}-win-${{ parameters.osVersion }}
           latest-win-${{ parameters.osVersion }}

@@ -1,4 +1,5 @@
-FROM mcr.microsoft.com/powershell:7.1.0-ubuntu-18.04
+ARG BASE_VERSION=ubuntu-18.04
+FROM mcr.microsoft.com/powershell:7.1.2-${BASE_VERSION}
 
 # Install unzip and rsync tools
 RUN apt-get update && apt-get install -y unzip rsync
