@@ -12,7 +12,7 @@ RUN pwsh -NoLogo -NoProfile -Command " \
             -Scope AllUsers \
             -Force \
             -AcceptLicense \
-            -RequiredVersion '21.1.18221' \
+            -RequiredVersion '21.1.18235' \
     "
 
 COPY ./migrations /usr/local/wfgen/migrations

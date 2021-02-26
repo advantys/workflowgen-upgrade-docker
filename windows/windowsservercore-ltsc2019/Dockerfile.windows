@@ -1,11 +1,40 @@
 #escape=`
+# Reference: https://github.com/PowerShell/PowerShell-Docker/blob/master/release/stable/windowsservercore1909/docker/Dockerfile
 ARG WINDOWS_SERVER_VERSION=1809
-FROM mcr.microsoft.com/powershell:7.1.0-windowsservercore-${WINDOWS_SERVER_VERSION}
+FROM mcr.microsoft.com/windows/servercore:${WINDOWS_SERVER_VERSION}
 
-SHELL [ "pwsh", "-Command", "$ErrorActionPreference = 'Stop';", "$ProgressPreference = 'SilentlyContinue';" ]
+ARG PS_VERSION=7.1.2
+ARG PS_PACKAGE_URL=https://github.com/PowerShell/PowerShell/releases/download/v${PS_VERSION}/PowerShell-${PS_VERSION}-win-x64.zip
+
+SHELL [ "powershell", "-NoLogo", "-NoProfile", "-Command", "$ErrorActionPreference = 'Stop';", "$ProgressPreference = 'SilentlyContinue';" ]
+
+# Set a fixed location for the Module analysis cache
+ENV PSModuleAnalysisCachePath="C:\Users\Public\AppData\Local\Microsoft\Windows\PowerShell\docker\ModuleAnalysisCache" `
+    # Opt out of telemetry
+    POWERSHELL_TELEMETRY_OPTOUT=1
+
+# Install PowerShell Core
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; `
+    Invoke-WebRequest $env:PS_PACKAGE_URL -OutFile C:\powershell.zip -Verbose; `
+    New-Item (Join-Path $env:ProgramFiles 'PowerShell') -ItemType Directory | Out-Null; `
+    tar -xf C:\powershell.zip -C (Join-Path $env:ProgramFiles 'PowerShell'); `
+    Remove-Item C:\powershell.zip -Force -ErrorAction SilentlyContinue; `
+    [Environment]::SetEnvironmentVariable( `
+        'PATH', `
+        ('{0};' -f (Join-Path $env:ProgramFiles 'PowerShell')) + $env:PATH, `
+        'Machine' `
+    );
+
+SHELL [ "pwsh", "-NoLogo", "-NoProfile", "-Command", "$ErrorActionPreference = 'Stop';", "$ProgressPreference = 'SilentlyContinue';" ]
+
+RUN $stopTime = (Get-Date).AddMinutes(15); `
+    while (-not (Test-Path -Path $env:PSModuleAnalysisCachePath)) {  `
+        Write-Host ('Waiting for {0}' -f $env:PSModuleAnalysisCachePath) ; `
+        if ((Get-Date) -gt $stopTime) { throw 'timout expired' } `
+        Start-Sleep -Seconds 6; `
+    }"
 
 # Install SqlServer module
-USER ContainerAdministrator
 RUN Install-Module SqlServer -Scope AllUsers -Force -AcceptLicense -RequiredVersion 21.1.18235
 
 USER ContainerUser
