@@ -407,6 +407,9 @@ try {
     }
 
     $tran.Complete()
+} catch {
+    Write-Host "An error occured during the transaction process: $($Error[0].Exception.Message)"
+    exit 1
 } finally {
     ${conn}?.Dispose()
     $tran.Dispose()
